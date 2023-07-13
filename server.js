@@ -123,8 +123,10 @@ app.get('/logout', (req, res) => {
   // Destroy the session
   req.session.destroy();
 
+  // Redirect to the homepage or any other desired page
   res.redirect('/');
 });
+
 
 // Blog post route
 app.get('/blogposts/:id', async (req, res) => {
