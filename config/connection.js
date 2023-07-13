@@ -3,7 +3,7 @@
 const Sequelize = require('sequelize');
 
 // Create a new Sequelize instance and configure the database connection
-const sequelize = new Sequelize('your-database-name', 'your-username', 'your-password', {
+const sequelize = new Sequelize('your-database-name', 'Wad-a-Disco', 'VoliantCobra75#@', {
   host: 'localhost',
   dialect: 'mysql',
 });
