@@ -2,7 +2,8 @@
 
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
-const User = require('./user');
+const User = require('./User');
+const Comment = require('./comment');
 
 class BlogPost extends Model {}
 
@@ -35,5 +36,11 @@ BlogPost.init(
     modelName: 'BlogPost',
   }
 );
+
+// Define associations
+BlogPost.belongsTo(User);
+User.hasMany(BlogPost);
+BlogPost.hasMany(Comment);
+Comment.belongsTo(BlogPost);
 
 module.exports = BlogPost;

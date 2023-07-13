@@ -1,10 +1,11 @@
 // server.js
+
 // Import dependencies
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
 const bcrypt = require('bcrypt');
-const { User, BlogPost } = require('./models');
+const { User, BlogPost, Comment } = require('./models');
 
 // Create an Express application
 const app = express();
@@ -24,6 +25,10 @@ app.use(express.json());
 
 // Serve static files from the public folder
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Set up view engine
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'handlebars');
 
 // Define routes
 
@@ -119,6 +124,42 @@ app.get('/logout', (req, res) => {
   req.session.destroy();
 
   res.redirect('/');
+});
+
+// Blog post route
+app.get('/blogposts/:id', async (req, res) => {
+  try {
+    const blogPostId = req.params.id;
+
+    // Retrieve the blog post and its associated comments from the database
+    const blogPost = await BlogPost.findByPk(blogPostId, {
+      include: [{ model: Comment, include: [User] }],
+    });
+
+    res.render('post', { blogPost });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to retrieve the blog post.' });
+  }
+});
+
+// Create a comment route
+app.post('/comments', async (req, res) => {
+  try {
+    const { postId, content } = req.body;
+
+    // Create a new comment in the database
+    await Comment.create({
+      content,
+      userId: req.session.user.id,
+      blogPostId: postId,
+    });
+
+    res.redirect(`/blogposts/${postId}`);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to create a new comment.' });
+  }
 });
 
 // Start the server

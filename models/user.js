@@ -2,6 +2,7 @@
 
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
+const Comment = require('./Comment');
 
 class User extends Model {}
 
@@ -27,5 +28,9 @@ User.init(
     modelName: 'User',
   }
 );
+
+// Define associations
+User.hasMany(Comment);
+Comment.belongsTo(User);
 
 module.exports = User;
