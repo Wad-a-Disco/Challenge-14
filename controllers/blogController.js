@@ -57,7 +57,9 @@ exports.updateBlogPost = async (req, res) => {
     await BlogPost.update({ title, content }, { where: { id: blogPostId } });
 
     res.redirect('/dashboard');
-  } catch (error) {
+  }
+
+  catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Failed to update the blog post.' });
   }
@@ -67,7 +69,6 @@ exports.updateBlogPost = async (req, res) => {
 exports.deleteBlogPost = async (req, res) => {
   try {
     const blogPostId = req.params.blogPostId;
-
     // Delete the blog post from the database
     await BlogPost.destroy({ where: { id: blogPostId } });
 
