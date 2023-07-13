@@ -2,8 +2,8 @@
 
 const { BlogPost } = require('../models');
 
-// Get all blog posts created by the logged-in user
-exports.getUserBlogPosts = async (req, res) => {
+// Get all blog posts for the current user
+exports.getAllUserBlogPosts = async (req, res) => {
   try {
     const userId = req.session.user.id;
     const blogPosts = await BlogPost.findAll({ where: { userId } });
