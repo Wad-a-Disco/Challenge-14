@@ -1,12 +1,11 @@
-// authController.js
+// controllers/authController.js
 
 const bcrypt = require('bcrypt');
 const { User } = require('../models');
 
-// Handle POST request to /signup
-const signup = async (req, res) => {
+// Signup route handler
+exports.signup = async (req, res) => {
   try {
-    // Retrieve the username and password from the request body
     const { username, password } = req.body;
 
     // Hash the password using bcrypt
@@ -15,19 +14,16 @@ const signup = async (req, res) => {
     // Create a new user record in the database
     await User.create({ username, password: hashedPassword });
 
-    // Redirect the user to the login page or any other appropriate page
     res.redirect('/login');
   } catch (error) {
-    // Handle any errors that occur during signup
     console.error(error);
     res.status(500).json({ message: 'Signup failed. Please try again.' });
   }
 };
 
-// Handle POST request to /login
-const login = async (req, res) => {
+// Login route handler
+exports.login = async (req, res) => {
   try {
-    // Retrieve the username and password from the request body
     const { username, password } = req.body;
 
     // Retrieve the user record from the database based on the provided username
@@ -52,16 +48,9 @@ const login = async (req, res) => {
       username: user.username,
     };
 
-    // Redirect the user to the dashboard or any other appropriate page
     res.redirect('/dashboard');
   } catch (error) {
-    // Handle any errors that occur during login
     console.error(error);
     res.status(500).json({ message: 'Login failed. Please try again.' });
   }
-};
-
-module.exports = {
-  signup,
-  login,
 };
