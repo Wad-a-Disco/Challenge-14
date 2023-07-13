@@ -1,0 +1,44 @@
+<!-- views/dashboard.handlebars -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tech Blog - Dashboard</title>
+</head>
+<body>
+  <h1>Welcome to Your Dashboard</h1>
+
+  <h2>Your Blog Posts:</h2>
+
+  {{#if userBlogPosts}}
+    <ul>
+      {{#each userBlogPosts}}
+        <li>
+          <h3>{{this.title}}</h3>
+          <p>{{this.content}}</p>
+          <form action="/dashboard/blogposts/{{this.id}}" method="POST">
+            <input type="hidden" name="_method" value="DELETE">
+            <button type="submit">Delete</button>
+          </form>
+          <form action="/dashboard/blogposts/{{this.id}}" method="POST">
+            <input type="hidden" name="_method" value="PUT">
+            <input type="text" name="title" value="{{this.title}}" placeholder="Update Title">
+            <textarea name="content" placeholder="Update Content">{{this.content}}</textarea>
+            <button type="submit">Update</button>
+          </form>
+        </li>
+      {{/each}}
+    </ul>
+  {{else}}
+    <p>No blog posts created yet.</p>
+  {{/if}}
+
+  <h2>Add a New Blog Post:</h2>
+
+  <form action="/dashboard/blogposts" method="POST">
+    <input type="text" name="title" placeholder="Title">
+    <textarea name="content" placeholder="Content"></textarea>
+    <button type="submit">Create</button>
+  </form>
+</body>
+</html>

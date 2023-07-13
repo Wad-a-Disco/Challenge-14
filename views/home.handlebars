@@ -1,0 +1,25 @@
+<!-- views/home.handlebars -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tech Blog - Home</title>
+</head>
+<body>
+  <h1>Welcome to the Tech Blog!</h1>
+
+  {{#if blogPosts}}
+    <h2>Latest Blog Posts:</h2>
+    <ul>
+      {{#each blogPosts}}
+        <li>
+          <h3>{{this.title}}</h3>
+          <p>{{this.content}}</p>
+        </li>
+      {{/each}}
+    </ul>
+  {{else}}
+    <p>No blog posts available.</p>
+  {{/if}}
+</body>
+</html>

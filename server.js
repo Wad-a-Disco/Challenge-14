@@ -1,10 +1,12 @@
 // server.js
-
+// Import dependencies
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
-const { User } = require('./models');
+const bcrypt = require('bcrypt');
+const { User, BlogPost } = require('./models');
 
+// Create an Express application
 const app = express();
 
 // Configure session middleware
@@ -26,8 +28,37 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Define routes
 
 // Home route
-app.get('/', (req, res) => {
-  res.send('Welcome to the Tech Blog!');
+app.get('/', async (req, res) => {
+  try {
+    // Retrieve existing blog posts from the database
+    const blogPosts = await BlogPost.findAll();
+
+    res.render('home', { blogPosts }); // Render the 'home' template and pass the retrieved blog posts as data
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to retrieve blog posts.' });
+  }
+});
+
+// Dashboard route
+app.get('/dashboard', async (req, res) => {
+  // Check if the user is authenticated
+  if (!req.session.user) {
+    // User not authenticated, redirect to login
+    return res.redirect('/login');
+  }
+
+  try {
+    // Retrieve the user's created blog posts from the database
+    const userBlogPosts = await BlogPost.findAll({
+      where: { userId: req.session.user.id },
+    });
+
+    res.render('dashboard', { userBlogPosts }); // Render the 'dashboard' template and pass the retrieved user's blog posts as data
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to retrieve user blog posts.' });
+  }
 });
 
 // Signup route
@@ -80,17 +111,6 @@ app.post('/login', async (req, res) => {
     console.error(error);
     res.status(500).json({ message: 'Login failed. Please try again.' });
   }
-});
-
-// Dashboard route
-app.get('/dashboard', (req, res) => {
-  // Check if the user is authenticated
-  if (!req.session.user) {
-    // User not authenticated, redirect to login
-    return res.redirect('/login');
-  }
-
-  res.send('Dashboard');
 });
 
 // Logout route
